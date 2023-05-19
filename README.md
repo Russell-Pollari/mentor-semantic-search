@@ -20,8 +20,8 @@ embedding collection is saved in .db folder
 ```
 $ python query_embeddings.py <query>
 ```
-where <query> is a string
+where `query` is a string
 
---
+-----
 
 See also: eda.pynb for API usage
