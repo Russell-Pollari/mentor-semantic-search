@@ -1,3 +1,10 @@
+## Installation
+
+Clone this repo and install dependencies
+```
+$ pip install requirements.txt
+```
+
 ## Usage
 
 ### Create embeddings
