@@ -13,7 +13,7 @@ EMBD_FNC = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-mpnet-base-v2")
 
 
-def get_chroma_client():
+def get_chroma_client() -> chromadb.Client:
     chroma_client = chromadb.Client(chromadb.config.Settings(
         chroma_db_impl="duckdb+parquet",
         persist_directory=PERSIST_DIRECTORY,
