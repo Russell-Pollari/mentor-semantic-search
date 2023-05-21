@@ -5,6 +5,11 @@ Clone this repo and install dependencies
 $ pip install -r requirements.txt
 ```
 
+Create .env file 
+```
+MONGO_URI=<mongodb_connection_string>
+```
+
 ## Usage
 
 ### Create embeddings
@@ -15,21 +20,8 @@ Create mentor embeddings
 
 optional arguments:
   -h, --help            show this help message and exit
-  --path-to-data PATH_TO_DATA
-                        Path to the data directory
   --collection-name COLLECTION_NAME
                         Name of the collection
-```
-
-data should be a `json` file with a list of mentors:
-```json
-[{
-  "_id": <userId>,
-  "readme": <string>,
-  "currentRole": <string>,
-}, {
-  ...
-}]
 ```
 
 

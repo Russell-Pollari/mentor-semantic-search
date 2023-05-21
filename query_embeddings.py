@@ -43,12 +43,12 @@ def format_results(result):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Query mentor embeddings')
-    parser.add_argument('--collection-name',
-                        default="mentors_l1_distance",
-                        help='Name of collection to query')
     parser.add_argument('--query',
                         default="healthcare analytics",
                         help='Query to run')
+    parser.add_argument('--collection-name',
+                        default="mentors_l1_distance",
+                        help='Name of collection to query')
     parser.add_argument('--n-results',
                         default=10,
                         help='Number of results to return')
