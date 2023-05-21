@@ -4,7 +4,6 @@ from chromadb.utils import embedding_functions
 
 import re
 import json
-import sys
 import argparse
 
 
@@ -28,11 +27,11 @@ def split_into_sentences(text):
 def camelcase_to_natural_language(camelcase_string):
     spaced_string = re.sub(r'(?<!^)(?=[A-Z])', ' ', camelcase_string)
     natural_language = spaced_string.capitalize()
-    
+ 
     return natural_language
 
 
-def tags_to_sentences(tags, prefix = "I have experience with "):
+def tags_to_sentences(tags, prefix="I have experience with "):
     return [prefix + camelcase_to_natural_language(tag) for tag in tags]
 
 
@@ -66,7 +65,7 @@ def get_mentor_sentences(path_to_file):
                     '_id': mentor['_id'],
                     'field': 'currentRole',
                 }
-            })   
+            })
 
     return mentor_sentences
 
@@ -90,7 +89,7 @@ def create_mentor_embeddings(mentor_sentences, collection_name="mentors"):
         #     "hnsw:space": "cosine",
         #     "hnsw:construction_ef": "20",
         #     "hnsw:M": "20",
-        # } 
+        # },
     )
 
     collection.add(
@@ -104,19 +103,29 @@ def create_mentor_embeddings(mentor_sentences, collection_name="mentors"):
 
 def get_mentor_embeddings(collection_name="mentors"):
     chroma_client = get_chroma_client()
-    collection = chroma_client.get_collection(name=collection_name, embedding_function=EMBD_FNC)
+    collection = chroma_client.get_collection(
+        name=collection_name,
+        embedding_function=EMBD_FNC)
     return collection
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create mentor embeddings')
-    parser.add_argument('--path-to-data', help='Path to the data directory', default='data/mentors.json')
-    parser.add_argument('--collection-name', help='Name of the collection', default='mentors')
+    parser.add_argument('--path-to-data',
+                        help='Path to the data directory',
+                        default='data/mentors.json')
+    parser.add_argument('--collection-name',
+                        help='Name of the collection',
+                        default='mentors')
 
     args = parser.parse_args()
-    
+
     mentor_sentences = get_mentor_sentences(args.path_to_data)
 
-    print ('Creating collection {} for {} sentences'.format(args.collection_name, len(mentor_sentences)))
+    print('Creating collection {} for {} sentences'.format(
+        args.collection_name,
+        len(mentor_sentences)))
 
-    collection = create_mentor_embeddings(mentor_sentences, collection_name=args.collection_name)
+    collection = create_mentor_embeddings(
+        mentor_sentences,
+        collection_name=args.collection_name)

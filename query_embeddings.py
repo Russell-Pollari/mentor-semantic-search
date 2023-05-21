@@ -1,15 +1,17 @@
 import pandas as pd
-import sys
 
-from create_embeddings import get_mentor_embeddings 
+import argparse
+
+from create_embeddings import get_mentor_embeddings
 
 
 def query_mentor_embeddings(
     query,
-    collection = None,
-    n_results = 10,
+    collection=None,
+    n_results=10,
 ):
     cleaned_query = query.replace('data', '')
+
     results = collection.query(
         query_texts=cleaned_query,
         n_results=n_results,
@@ -28,23 +30,32 @@ def format_results(result):
     })
 
     df['profile'] = df.apply(lambda row: 'https://app.sharpestminds.com/u/' + str(row['userId']), axis=1)
-    grouped_df = df.groupby('userId').agg({'document': lambda x: ', '.join(x), 'profile': 'first' })
+    grouped_df = df.groupby('userId').agg({
+        'document': lambda x: ', '.join(x),
+        'profile': 'first'
+    })
     grouped_df['num_sentences'] = df.groupby('userId').size()
 
-    grouped_df = grouped_df.sort_values(by=['num_sentences'], ascending=False).head(10)
+    grouped_df = grouped_df.sort_values(by=['num_sentences'], ascending=False)
+
     return grouped_df
 
 
 if __name__ == '__main__':
-    try:
-        query = sys.argv[1]
-    except:
-        query = "healthcare analytics"
+    parser = argparse.ArgumentParser(description='Query mentor embeddings')
+    parser.add_argument('--collection-name',
+                        default="mentors_l1_distance",
+                        help='Name of collection to query')
+    parser.add_argument('--query',
+                        default="healthcare analytics",
+                        help='Query to run')
+    parser.add_argument('--n-results',
+                        default=10,
+                        help='Number of results to return')
+    args = parser.parse_args()
 
-    collection = get_mentor_embeddings(collection_name="mentors_l1_distance")
-    results = query_mentor_embeddings(query, collection, n_results=10)
-    print(results)
-
+    collection = get_mentor_embeddings(collection_name=args.collection_name)
+    results = query_mentor_embeddings(args.query, collection)
     df = format_results(results)
-    print (df)
+    print(df)
 
