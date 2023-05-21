@@ -1,19 +1,28 @@
-import nltk
+from nltk.tokenize import sent_tokenize
 import chromadb
 from chromadb.utils import embedding_functions
+
 import re
 import json
 import sys
+import argparse
 
 
 EMBD_FNC = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-mpnet-base-v2")
 PERSIST_DIRECTORY = '.db'
 
 
+def clean_readme(readme):
+    header_pattern = r'^\s*#{1,6}\s+(.*)$'
+    return re.sub(header_pattern, '', readme, flags=re.MULTILINE)
+
+
 def split_into_sentences(text):
-    nltk.download('punkt')
-    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-    return tokenizer.tokenize(text)
+    cleaned_text = clean_readme(text)
+    lines = cleaned_text.split('\n')
+    sentences = []
+    [sentences.extend(sent_tokenize(line)) for line in lines]
+    return sentences
 
 
 def camelcase_to_natural_language(camelcase_string):
@@ -57,31 +66,7 @@ def get_mentor_sentences(path_to_file):
                     '_id': mentor['_id'],
                     'field': 'currentRole',
                 }
-            })
-
-        if mentor.get('technicalFeatures') is not None:
-            mentor_sentences.extend([{
-                'sentence': sentence,
-                'id': mentor['_id'] + '_' + 'technical' + str(index),
-                'metadata': {
-                    '_id': mentor['_id'],
-                    'field': 'technicalFeatures',
-                }
-            }
-                for index, sentence in enumerate(tags_to_sentences(mentor['technicalFeatures']))
-            ])
-        
-        if mentor.get('domainFeatures') is not None:
-            mentor_sentences.extend([{
-                'sentence': sentence,
-                'id': mentor['_id'] + '_' + 'domain' + str(index),
-                'metadata': {
-                    '_id': mentor['_id'],
-                    'field': 'domainFeatures',
-                }
-            }
-                for index, sentence in enumerate(tags_to_sentences(mentor['domainFeatures'], prefix="I have domain experience in "))
-            ])    
+            })   
 
     return mentor_sentences
 
