@@ -9,8 +9,9 @@ def query_mentor_embeddings(
     collection = None,
     n_results = 10,
 ):
+    cleaned_query = query.replace('data', '')
     results = collection.query(
-        query_texts=[query],
+        query_texts=cleaned_query,
         n_results=n_results,
     )
 
@@ -38,12 +39,12 @@ if __name__ == '__main__':
     try:
         query = sys.argv[1]
     except:
-        query = "Deep learning engineer with experience in computer vision"
+        query = "healthcare analytics"
 
-    collection = get_mentor_embeddings()
-    results = query_mentor_embeddings(query, collection)
+    collection = get_mentor_embeddings(collection_name="mentors_l1_distance")
+    results = query_mentor_embeddings(query, collection, n_results=10)
+    print(results)
 
     df = format_results(results)
-    for df in df.iterrows():
-        print (df[1]['profile'])
-        print (df[1]['document'])
+    print (df)
+
