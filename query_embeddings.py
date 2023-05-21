@@ -1,5 +1,6 @@
 import pandas as pd
 from chromadb.api.types import QueryResult  # type: ignore
+from chromadb.api.models.collection import Collection  # type: ignore
 
 import argparse
 
@@ -8,7 +9,7 @@ from create_embeddings import get_mentor_embeddings
 
 def query_mentor_embeddings(
     query: str,
-    collection=None,
+    collection: Collection,
     n_results: int = 10,
 ) -> QueryResult:
     cleaned_query = query.replace('data', '')
