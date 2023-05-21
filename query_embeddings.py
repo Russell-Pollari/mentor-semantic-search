@@ -29,7 +29,9 @@ def format_results(result):
         'field': [metadata['field'] for metadata in result['metadatas'][0]],
     })
 
-    df['profile'] = df.apply(lambda row: 'https://app.sharpestminds.com/u/' + str(row['userId']), axis=1)
+    df['profile'] = df.apply(
+        lambda row: 'https://app.sharpestminds.com/u/' + str(row['userId']),
+        axis=1)
     grouped_df = df.groupby('userId').agg({
         'document': lambda x: ', '.join(x),
         'profile': 'first'
@@ -58,4 +60,3 @@ if __name__ == '__main__':
     results = query_mentor_embeddings(args.query, collection)
     df = format_results(results)
     print(df)
-
