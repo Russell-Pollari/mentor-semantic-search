@@ -1,4 +1,5 @@
 import pandas as pd
+from chromadb.api.types import QueryResult  # type: ignore
 
 import argparse
 
@@ -6,10 +7,10 @@ from create_embeddings import get_mentor_embeddings
 
 
 def query_mentor_embeddings(
-    query,
+    query: str,
     collection=None,
-    n_results=10,
-):
+    n_results: int = 10,
+) -> QueryResult:
     cleaned_query = query.replace('data', '')
 
     results = collection.query(
@@ -20,7 +21,7 @@ def query_mentor_embeddings(
     return results
 
 
-def format_results(result):
+def format_results(result: QueryResult) -> pd.DataFrame:
     df = pd.DataFrame({
         'distance': result['distances'][0],
         'document': result['documents'][0],

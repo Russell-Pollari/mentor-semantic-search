@@ -1,5 +1,7 @@
-import chromadb
-from chromadb.utils import embedding_functions
+from typing import List
+import chromadb  # type: ignore
+from chromadb.utils import embedding_functions  # type: ignore
+from chroma.api.models.collection import Collection  # type: ignore
 
 import argparse
 
@@ -20,7 +22,9 @@ def get_chroma_client():
     return chroma_client
 
 
-def create_mentor_embeddings(mentor_sentences, collection_name="mentors"):
+def create_mentor_embeddings(
+        mentor_sentences: List[dict],
+        collection_name: str = 'mentors') -> Collection:
     chroma_client = get_chroma_client()
 
     collection = chroma_client.create_collection(
@@ -40,7 +44,7 @@ def create_mentor_embeddings(mentor_sentences, collection_name="mentors"):
     return collection
 
 
-def get_mentor_embeddings(collection_name="mentors"):
+def get_mentor_embeddings(collection_name: str = 'mentors') -> Collection:
     chroma_client = get_chroma_client()
     collection = chroma_client.get_collection(
         name=collection_name,
