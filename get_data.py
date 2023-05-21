@@ -1,6 +1,11 @@
+from typing import List
 import pymongo
+from pymongo.database import Database
+from pymongo import MongoClient
+from pymongo.cursor import Cursor
+
 from dotenv import load_dotenv
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import sent_tokenize  # type: ignore
 
 import os
 import re
@@ -9,27 +14,28 @@ import re
 load_dotenv()
 
 
-def connect_to_db():
+def connect_to_db() -> Database:
     load_dotenv()
-    client = pymongo.MongoClient(os.getenv('MONGO_URI'))
+    client: MongoClient = pymongo.MongoClient(os.getenv('MONGO_URI'))
     db = client.get_default_database()
     return db
 
 
-def clean_readme(readme):
+def clean_readme(readme: str) -> str:
     header_pattern = r'^\s*#{1,6}\s+(.*)$'
     return re.sub(header_pattern, '', readme, flags=re.MULTILINE)
 
 
-def split_readme_into_sentences(readme):
+def split_readme_into_sentences(readme: str) -> List[str]:
     cleaned_text = clean_readme(readme)
     lines = cleaned_text.split('\n')
     sentences = []
-    [sentences.extend(sent_tokenize(line)) for line in lines]
+    for line in lines:
+        sentences.extend(sent_tokenize(line))
     return sentences
 
 
-def get_mentors():
+def get_mentors() -> Cursor:
     db = connect_to_db()
     mentors = db.users.find({
         "roles": "mentor",
@@ -42,7 +48,7 @@ def get_mentors():
     return mentors
 
 
-def get_mentor_sentences():
+def get_mentor_sentences() -> List[dict]:
     mentors = get_mentors()
     mentor_sentences = []
 
