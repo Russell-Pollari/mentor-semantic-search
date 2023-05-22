@@ -1,6 +1,6 @@
 import pandas as pd
 from chromadb.api.types import QueryResult  # type: ignore
-from chromadb.api.models.collection import Collection  # type: ignore
+from chromadb.api.models import Collection  # type: ignore
 
 import argparse
 

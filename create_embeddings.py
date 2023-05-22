@@ -1,7 +1,7 @@
 from typing import List
 import chromadb  # type: ignore
 from chromadb.utils import embedding_functions  # type: ignore
-from chroma.api.models.collection import Collection  # type: ignore
+from chromadb.api.models import Collection  # type: ignore
 
 import argparse
 
