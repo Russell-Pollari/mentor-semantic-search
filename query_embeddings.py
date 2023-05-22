@@ -1,4 +1,6 @@
 import pandas as pd
+from chromadb.api.types import QueryResult  # type: ignore
+from chromadb.api.models import Collection  # type: ignore
 
 import argparse
 
@@ -6,10 +8,10 @@ from create_embeddings import get_mentor_embeddings
 
 
 def query_mentor_embeddings(
-    query,
-    collection=None,
-    n_results=10,
-):
+    query: str,
+    collection: Collection,
+    n_results: int = 10,
+) -> QueryResult:
     cleaned_query = query.replace('data', '')
 
     results = collection.query(
@@ -20,7 +22,7 @@ def query_mentor_embeddings(
     return results
 
 
-def format_results(result):
+def format_results(result: QueryResult) -> pd.DataFrame:
     df = pd.DataFrame({
         'distance': result['distances'][0],
         'document': result['documents'][0],
@@ -29,7 +31,9 @@ def format_results(result):
         'field': [metadata['field'] for metadata in result['metadatas'][0]],
     })
 
-    df['profile'] = df.apply(lambda row: 'https://app.sharpestminds.com/u/' + str(row['userId']), axis=1)
+    df['profile'] = df.apply(
+        lambda row: 'https://app.sharpestminds.com/u/' + str(row['userId']),
+        axis=1)
     grouped_df = df.groupby('userId').agg({
         'document': lambda x: ', '.join(x),
         'profile': 'first'
@@ -58,4 +62,3 @@ if __name__ == '__main__':
     results = query_mentor_embeddings(args.query, collection)
     df = format_results(results)
     print(df)
-
