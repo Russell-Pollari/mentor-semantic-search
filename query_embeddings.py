@@ -4,7 +4,13 @@ from chromadb.api.models import Collection  # type: ignore
 
 import argparse
 
-from create_embeddings import get_mentor_embeddings
+from create_embeddings import get_mentor_embeddings, get_chroma_client
+
+
+def list_collections() -> None:
+    chroma_client = get_chroma_client()
+    collections = chroma_client.list_collections()
+    print(collections)
 
 
 def query_mentor_embeddings(
