@@ -3,10 +3,12 @@ import chromadb  # type: ignore
 from chromadb.utils import embedding_functions  # type: ignore
 from chromadb.api.models import Collection  # type: ignore
 
+from dotenv import load_dotenv
 import argparse
 
 from get_data import get_mentor_sentences
 
+load_dotenv()
 
 PERSIST_DIRECTORY = '.db'
 EMBD_FNC = embedding_functions.SentenceTransformerEmbeddingFunction(
@@ -14,10 +16,11 @@ EMBD_FNC = embedding_functions.SentenceTransformerEmbeddingFunction(
 
 
 def get_chroma_client() -> chromadb.Client:
-    chroma_client = chromadb.Client(chromadb.config.Settings(
-        chroma_db_impl="duckdb+parquet",
-        persist_directory=PERSIST_DIRECTORY,
-    ))
+    # chroma_client = chromadb.Client(chromadb.config.Settings(
+    #     chroma_db_impl="duckdb+parquet",
+    #     persist_directory=PERSIST_DIRECTORY,
+    # ))
+    chroma_client = chromadb.Client()
 
     return chroma_client
 
